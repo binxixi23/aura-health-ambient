@@ -43,7 +43,7 @@ aura-health-ambient/
 ├── requirements.txt            # Python development dependencies
 └── README.md                   # Project documentation
 ```
-
+![AURA-Health-Ambient Analytics](Analytic.png)
 ---
 
 ## 🛠️ Technical Stack & Dependencies
