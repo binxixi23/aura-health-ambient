@@ -1,0 +1,15 @@
+# Python caches
+__pycache__/
+*.pyc
+
+# Local environments
+.venv/
+env/
+ENV/
+
+# Dynamic data logs (Giữ cấu trúc thư mục nhưng không đẩy dữ liệu cá nhân lên)
+data/vitals_history/*.csv
+
+# Operating system metadata
+.DS_Store
+Thumbs.db

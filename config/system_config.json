@@ -1,0 +1,69 @@
+{
+  "system_metadata": {
+    "project_name": "AURA-Health-Ambient",
+    "version": "2.0.0",
+    "environment": "edge-native-deployment"
+  },
+  "sensor_inputs": {
+    "camera": {
+      "source_id": 0,
+      "fallback_rtsp_stream": "rtsp://admin:password@192.168.1.100:554/stream1",
+      "target_width": 640,
+      "target_height": 480,
+      "target_fps": 30
+    },
+    "mmwave_radar": {
+      "enabled": false,
+      "serial_port": "COM3",
+      "baud_rate": 921600,
+      "min_range_meters": 0.5,
+      "max_range_meters": 4.5
+    }
+  },
+  "rppg_vitals_processor": {
+    "calibration_window_seconds": 10,
+    "min_valid_bpm": 45.0,
+    "max_valid_bpm": 180.0,
+    "butterworth_filter": {
+      "order": 3,
+      "low_cut_frequency_hz": 0.75,
+      "high_cut_frequency_hz": 3.0
+    },
+    "roi_settings": {
+      "face_stabilization_enabled": true,
+      "target_matrix_size": [200, 200]
+    }
+  },
+  "kinematics_fall_detection": {
+    "mediapipe_pose": {
+      "min_detection_confidence": 0.7,
+      "min_tracking_confidence": 0.7
+    },
+    "thresholds": {
+      "critical_vertical_velocity": 450.0,
+      "horizontal_aspect_ratio": 1.2,
+      "immobility_duration_seconds": 4.0
+    }
+  },
+  "ros2_navigation_docking": {
+    "enabled": true,
+    "cmd_vel_topic": "/cmd_vel",
+    "ir_signals_topic": "/dock_ir_signals",
+    "battery_low_threshold_percent": 20.0,
+    "docking_speeds": {
+      "linear_forward_mps": 0.1,
+      "linear_creep_mps": 0.02,
+      "angular_adjust_radps": 0.2
+    }
+  },
+  "emergency_incident_response": {
+    "verification_countdown_seconds": 10,
+    "alert_cooldown_seconds": 300,
+    "confidence_threshold_percent": 85.0,
+    "dispatch_channels": {
+      "local_audio_alarm_enabled": true,
+      "cellular_esim_sos_enabled": true,
+      "webrtc_telehealth_uplink": true
+    }
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA-Health-Ambient: Telehealth Feed</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #111; color: #fff; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .video-container { width: 100%; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); aspect-ratio: 4/3; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .controls { margin-top: 15px; display: flex; gap: 10px; }
+        button { background: #E50914; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #b80710; }
+        .status { padding: 10px; border-radius: 4px; background: #222; font-size: 0.9rem; color: #aaa; flex-grow: 1; display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+    <h2>📡 Live Ambient Clinical Feed</h2>
+    <div class="video-container">
+        <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+    <div class="controls">
+        <button id="connectBtn" onclick="initiateTelehealthStream()">Connect Live Uplink</button>
+        <div id="statusIndicator" class="status">Status: Disconnected. Waiting for peer command...</div>
+    </div>
+
+    <script>
+        const targetServerIp = "192.168.1.50"; // Change this to your Jetson Orin's IP address
+        let peerConn = null;
+
+        async function initiateTelehealthStream() {
+            const statusLog = document.getElementById("statusIndicator");
+            statusLog.innerText = "Status: Initializing WebRTC handshake protocols...";
+            
+            peerConn = new RTCPeerConnection({ iceServers: [{ urls: "stun:://google.com" }] });
+
+            // Watch for track events arriving from the AURA system
+            peerConn.ontrack = (event) => {
+                document.getElementById("remoteVideo").srcObject = event.streams[0];
+                statusLog.innerText = "Status: 🟢 Stream Secured. Rendering low-latency feed.";
+            };
+
+            // Programmatically prepare for video lines reception
+            peerConn.addTransceiver('video', { direction: 'recvonly' });
+
+            // Build local session proposal description (SDP Offer)
+            const offer = await peerConn.createOffer();
+            await peerConn.setLocalDescription(offer);
+
+            try {
+                // Post SDP structures up to the AURA asynchronous web framework endpoint
+                const response = await fetch(`http://${targetServerIp}:8080/offer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sdp: peerConn.localDescription.sdp, type: peerConn.localDescription.type })
+                });
+
+                const answer = await response.json();
+                await peerConn.setRemoteDescription(new RTCSessionDescription(answer));
+            } catch (err) {
+                statusLog.innerText = `Status: 🔴 Handshake Failed. Connection timed out.`;
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

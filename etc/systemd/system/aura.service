@@ -1,0 +1,28 @@
+[Unit]
+Description=AURA Health Ambient - Non-Contact Health Monitoring Daemon
+After=network.target network-online.target systemd-modules-load.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adjust username to match the target active profile config on your Orin (e.g., jetson or root)
+User=jetson
+WorkingDirectory=/home/jetson/aura-health-ambient
+
+# Automatically sources local environment properties profiles prior to execution loops
+ExecStart=/usr/bin/python3 /home/jetson/aura-health-ambient/src/main_hub.py
+
+# Crash Recovery parameters mapping
+Restart=always
+RestartSec=5s
+
+# Standard Logging routes for structural system diagnostics parsing
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=aura-ambient
+
+# Grant hardware processing thread priorities to ensure uninterrupted sensor parsing loops
+Nice=-10
+
+[Install]
+WantedBy=multi-user.target

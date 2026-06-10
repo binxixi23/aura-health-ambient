@@ -1,0 +1,6 @@
+numpy==1.24.3
+opencv-python==4.8.0.74
+mediapipe==0.10.5
+scipy==1.10.1
+pyserial==3.5
+# Note: For ROS 2 Humble/Iron integration, rclpy is sourced natively from your environment setup.
