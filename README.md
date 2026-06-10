@@ -1,5 +1,6 @@
 # AURA-Health-Ambient
 
+![AURA-Health-Ambient ](aura-health-ambient.png)
 **"The Invisible Shield: Non-Contact Vitals Tracking and Ambient Fall Prevention for High-Risk Care."**
 
 AURA-Health-Ambient is a next-generation Ambient Intelligence (AmI) system designed to protect elderly individuals, heart patients with pacemakers, and mobility-impaired individuals without requiring them to wear physical sensors, charge smartwatches, or interact with mobile applications.
